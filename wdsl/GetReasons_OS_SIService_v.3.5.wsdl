@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="GetReasons_OS_SI" targetNamespace="urn:kmd.dk:LPT:VACAB:external" xmlns:p1="urn:kmd.dk:LPT:VACAB:external" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+	<wsdl:documentation/>
+	<wsp:UsingPolicy wsdl:required="true"/>
+	<wsp:Policy wsu:Id="OP_GetReasons_OS_SI"/>
+	<wsdl:types>
+		<xsd:schema targetNamespace="urn:kmd.dk:LPT:VACAB:external" xmlns="urn:kmd.dk:LPT:VACAB:external" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+			<xsd:element name="GetReasonsResponse_MT" type="GetReasonsResponse"/>
+			<xsd:element name="GetReasonsRequest_MT" type="GetReasonsRequest"/>
+			<xsd:complexType name="GetReasonsResponse">
+				<xsd:annotation>
+					<xsd:appinfo source="http://sap.com/xi/VersionID">e18b1b04c0c011eca78700001a7bed86</xsd:appinfo>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element name="ReturnStatus" minOccurs="0">
+						<xsd:annotation>
+							<xsd:appinfo source="http://sap.com/xi/TextID">69e9a4c49f2f11e6b268005056a06c6c</xsd:appinfo>
+						</xsd:annotation>
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="StatusType" type="xsd:string" minOccurs="0">
+									<xsd:annotation>
+										<xsd:appinfo source="http://sap.com/xi/TextID">69e9a4c19f2f11e69318005056a06c6c</xsd:appinfo>
+									</xsd:annotation>
+								</xsd:element>
+								<xsd:element name="MessageText" type="xsd:string" minOccurs="0">
+									<xsd:annotation>
+										<xsd:appinfo source="http://sap.com/xi/TextID">69e9a4c29f2f11e6b361005056a06c6c</xsd:appinfo>
+									</xsd:annotation>
+								</xsd:element>
+							</xsd:sequence>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="Reason" minOccurs="0">
+						<xsd:annotation>
+							<xsd:appinfo source="http://sap.com/xi/TextID">69e9a4c89f2f11e68e2f005056a06c6c</xsd:appinfo>
+						</xsd:annotation>
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="Item" minOccurs="0" maxOccurs="unbounded">
+									<xsd:annotation>
+										<xsd:appinfo source="http://sap.com/xi/TextID">69e9a4c79f2f11e6cad5005056a06c6c</xsd:appinfo>
+									</xsd:annotation>
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="ReasonCode" type="xsd:string" minOccurs="0">
+												<xsd:annotation>
+													<xsd:appinfo source="http://sap.com/xi/TextID">69e9a4c59f2f11e6ba53005056a06c6c</xsd:appinfo>
+												</xsd:annotation>
+											</xsd:element>
+											<xsd:element name="ReasonCodeText" type="xsd:string" minOccurs="0">
+												<xsd:annotation>
+													<xsd:appinfo source="http://sap.com/xi/TextID">69e9a4c69f2f11e6b0a3005056a06c6c</xsd:appinfo>
+												</xsd:annotation>
+											</xsd:element>
+											<xsd:element name="ReasonStartDate" type="xsd:string" minOccurs="0"/>
+											<xsd:element name="ReasonEndDate" type="xsd:string" minOccurs="0"/>
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+							</xsd:sequence>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="GetReasonsRequest">
+				<xsd:annotation>
+					<xsd:appinfo source="http://sap.com/xi/VersionID">ea355b20c79911ec862b000019df1fba</xsd:appinfo>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element name="ClientID" type="xsd:string" minOccurs="0">
+						<xsd:annotation>
+							<xsd:appinfo source="http://sap.com/xi/TextID">909252e7565911ec923f005056b3304a</xsd:appinfo>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="PersonnelNumber" type="xsd:string" minOccurs="0">
+						<xsd:annotation>
+							<xsd:appinfo source="http://sap.com/xi/TextID">1ef34ddb9f2f11e6ab9e005056a06c6c</xsd:appinfo>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="leaveType" type="xsd:string" minOccurs="0">
+						<xsd:annotation>
+							<xsd:appinfo source="http://sap.com/xi/TextID">1ef5817b9f2f11e68539005056a06c6c</xsd:appinfo>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="StartDate" type="xsd:string" minOccurs="0"/>
+					<xsd:element name="EndDate" type="xsd:string" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:complexType>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="GetReasonsRequest_MT">
+		<wsdl:documentation/>
+		<wsdl:part name="GetReasonsRequest_MT" element="p1:GetReasonsRequest_MT"/>
+	</wsdl:message>
+	<wsdl:message name="GetReasonsResponse_MT">
+		<wsdl:documentation/>
+		<wsdl:part name="GetReasonsResponse_MT" element="p1:GetReasonsResponse_MT"/>
+	</wsdl:message>
+	<wsdl:portType name="GetReasons_OS_SI">
+		<wsdl:documentation/>
+		<wsdl:operation name="GetReasons_OS_SI">
+			<wsdl:documentation/>
+			<wsp:Policy>
+				<wsp:PolicyReference URI="#OP_GetReasons_OS_SI"/>
+			</wsp:Policy>
+			<wsdl:input message="p1:GetReasonsRequest_MT"/>
+			<wsdl:output message="p1:GetReasonsResponse_MT"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="GetReasons_OS_SIBinding" type="p1:GetReasons_OS_SI">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+		<wsdl:operation name="GetReasons_OS_SI">
+			<soap:operation soapAction="http://sap.com/xi/WebService/soap1.1" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			<wsdl:input>
+				<soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="GetReasons_OS_SIService">
+		<wsdl:port name="HTTPS_Port" binding="p1:GetReasons_OS_SIBinding">
+			<soap:address location="https://opus-api-prod.prod01.apimanagement.eu10.hana.ondemand.com/lpt/get-reasons" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
