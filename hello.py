@@ -13,8 +13,7 @@ def main():
     P12_PASSWORD = os.getenv("CLIENT_CERT_PASSWORD")
 
     # === WSDL + ENDPOINT CONFIG ===
-    WSDL_PATH = "wdsl/GetAbsenceAttendanceByPeriod_OS_SIService_v.3.5.wsdl"
-    ENDPOINT_URL = "https://naestved.kmd.dk/opus/personale/absenceattendance/GetAbsenceAttendanceByPeriod.svc"
+    WSDL_PATH = "/Users/lakas/git/Absence/Absence/src/wdsl/GetAbsenceAttendanceByPeriod_OS_SIService_v.3.5.wsdl"
     ENDPOINT_URL = "https://opus-api-prod.prod01.apimanagement.eu10.hana.ondemand.com/lpt/get-absence-attendance-by-period"
 
 
