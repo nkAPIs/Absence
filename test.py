@@ -18,9 +18,6 @@ absence = Absence(
 #     personnel_number="122743"
 # )
 # print(response)
-
-
-
 # response = absence.set_absence_attendance(
 #     start_date="2025-10-22",
 #     end_date="9999-12-31",
@@ -28,11 +25,14 @@ absence = Absence(
 #     absence_type=AbsenceType.SICK_LEAVE
 # )
 # print(response)
+# response = absence.set_absence_attendance(
+#     start_date="2025-10-22",
+#     end_date="2025-10-23",
+#     personnel_number="122743",
+#     absence_type=AbsenceType.CHILD_SICK_LEAVE
+# )
 
-response = absence.set_absence_attendance(
-    start_date="2025-10-22",
-    end_date="2025-10-23",
-    personnel_number="122743",
-    absence_type=AbsenceType.CHILD_SICK_LEAVE
-)
+response = absence.set_sick_leave("2025-10-22", "9999-12-31", "122743")
+print(response)
+response = absence.end_sick_leave("2025-10-22", "9999-12-31", "122743")
 print(response)

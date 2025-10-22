@@ -43,18 +43,48 @@ class Absence:
         )
         response = service.GetAbsenceAttendanceByPeriod_OS_SI(**request)
         return response
-        
-    def set_absence_attendance(self, start_date, end_date, personnel_number, absence_type: AbsenceType):
+
+    def _get_request(self, operation: OperationType, start_date, end_date, personnel_number, absence_type: AbsenceType):
+
+        if operation == OperationType.INSERT:
+            return {
+                "ClientID": self.client_id,
+                "StartDate": start_date,
+                "EndDate": end_date,
+                "Operation": operation.value,
+                "PersonnelNumber": personnel_number,
+                "AbsenceAttendanceType": absence_type.value,
+                "VendorUUID": "A0369F2D21711ED999CDA1F855B02B34"
+            }
+        elif operation == OperationType.UPDATE:
+            return {
+                "ClientID": self.client_id,
+                "StartDate": start_date,
+                "OriginalStartDate": start_date,
+                "EndDate": end_date,
+                "OriginalEndDate": end_date,
+                "Operation": operation.value,
+                "PersonnelNumber": personnel_number,
+                "AbsenceAttendanceType": absence_type.value,
+                "VendorUUID": "A0369F2D21711ED999CDA1F855B02B34"
+            }
+        elif operation == OperationType.DELETE:
+            return {
+                "ClientID": self.client_id,
+                "StartDate": start_date,
+                "EndDate": end_date,
+                "Operation": operation.value,
+                "PersonnelNumber": personnel_number,
+                "AbsenceAttendanceType": absence_type.value,
+                "VendorUUID": "A0369F2D21711ED999CDA1F855B02B34"
+            }
+        else:
+            raise ValueError("Invalid operation type")
+                    
+                
+    def set_absence_attendance(self, start_date, end_date, personnel_number, absence_type: AbsenceType, operation: OperationType):
         client = self._get_client(wsdl_path=f"{self.wsdl_path}SetAbsenceAttendance_OS_SIService_v.3.5.wsdl")
-        request = {
-            "ClientID": self.client_id,
-            "StartDate": start_date,
-            "EndDate": end_date,
-            "Operation": OperationType.INSERT.value,
-            "PersonnelNumber": personnel_number,
-            "AbsenceAttendanceType": absence_type.value,
-            "VendorUUID": "A0369F2D21711ED999CDA1F855B02B34"
-        }
+        request = self._get_request(operation, start_date, end_date, personnel_number, absence_type)
 
         service = client.create_service(
             "{urn:kmd.dk:LPT:VACAB:external}SetAbsenceAttendance_OS_SIBinding",
@@ -62,5 +92,33 @@ class Absence:
         )
         response = service.SetAbsenceAttendance_OS_SI(**request)
         return response
-
+    ############################################################################################
+    #### Convenience Methods ####
+    ############################################################################################
+    def set_child_sick_leave(self, start_date, end_date, personnel_number):
+        return self.set_absence_attendance(
+            start_date=start_date,
+            end_date=end_date,
+            personnel_number=personnel_number,
+            absence_type=AbsenceType.CHILD_SICK_LEAVE,
+            operation=OperationType.INSERT
+        )
+        
+    def set_sick_leave(self, start_date, end_date, personnel_number):
+        return self.set_absence_attendance(
+            start_date=start_date,
+            end_date=end_date,
+            personnel_number=personnel_number,
+            absence_type=AbsenceType.SICK_LEAVE,
+            operation=OperationType.INSERT
+        )   
+        
+    def end_sick_leave(self, start_date, end_date, personnel_number):
+        return self.set_absence_attendance(
+            start_date=start_date,
+            end_date=end_date,
+            personnel_number=personnel_number,
+            absence_type=AbsenceType.SICK_LEAVE,
+            operation=OperationType.UPDATE
+        )
         
