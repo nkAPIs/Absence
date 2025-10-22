@@ -2,6 +2,9 @@ from zeep import Client, Transport
 from requests_pkcs12 import Pkcs12Adapter
 import requests
 from enum import Enum
+from zeep.helpers import serialize_object
+from datetime import datetime
+
 class AbsenceType(Enum):
     SICK_LEAVE = "SY"
     CHILD_SICK_LEAVE = "BS"
@@ -44,7 +47,7 @@ class Absence:
         response = service.GetAbsenceAttendanceByPeriod_OS_SI(**request)
         return response
 
-    def _get_request(self, operation: OperationType, start_date, end_date, personnel_number, absence_type: AbsenceType):
+    def _get_request(self, operation: OperationType, start_date, end_date, personnel_number, absence_type: AbsenceType, original_enddate=None):
 
         if operation == OperationType.INSERT:
             return {
@@ -62,36 +65,57 @@ class Absence:
                 "StartDate": start_date,
                 "OriginalStartDate": start_date,
                 "EndDate": end_date,
-                "OriginalEndDate": end_date,
+                "OriginalEndDate": original_enddate,
                 "Operation": operation.value,
                 "PersonnelNumber": personnel_number,
                 "AbsenceAttendanceType": absence_type.value,
+                "OriginalAbsenceAttendanceType": absence_type.value,
                 "VendorUUID": "A0369F2D21711ED999CDA1F855B02B34"
             }
-        elif operation == OperationType.DELETE:
-            return {
-                "ClientID": self.client_id,
-                "StartDate": start_date,
-                "EndDate": end_date,
-                "Operation": operation.value,
-                "PersonnelNumber": personnel_number,
-                "AbsenceAttendanceType": absence_type.value,
-                "VendorUUID": "A0369F2D21711ED999CDA1F855B02B34"
-            }
+        # elif operation == OperationType.DELETE:
+        #     return {
+        #         "ClientID": self.client_id,
+        #         "StartDate": start_date,
+        #         "EndDate": end_date,
+        #         "Operation": operation.value,
+        #         "PersonnelNumber": personnel_number,
+        #         "AbsenceAttendanceType": absence_type.value,
+        #         "VendorUUID": "A0369F2D21711ED999CDA1F855B02B34"
+        #     }
         else:
             raise ValueError("Invalid operation type")
                     
                 
-    def set_absence_attendance(self, start_date, end_date, personnel_number, absence_type: AbsenceType, operation: OperationType):
+    def set_absence_attendance(self, start_date, end_date, personnel_number, absence_type: AbsenceType, operation: OperationType, original_enddate=None):
         client = self._get_client(wsdl_path=f"{self.wsdl_path}SetAbsenceAttendance_OS_SIService_v.3.5.wsdl")
-        request = self._get_request(operation, start_date, end_date, personnel_number, absence_type)
-
+        request = self._get_request(operation, start_date, end_date, personnel_number, absence_type, original_enddate)
+        
         service = client.create_service(
             "{urn:kmd.dk:LPT:VACAB:external}SetAbsenceAttendance_OS_SIBinding",
             f"{self.base_url}set-absence-attendance"
         )
         response = service.SetAbsenceAttendance_OS_SI(**request)
         return response
+    
+    def _get_start_end_dates_for_personnel(self, personnel_number, absence_type: AbsenceType):
+        response = self.get_absence_attendance_by_period(
+            start_date="2000-01-01",
+            end_date="9999-12-31",
+            personnel_number=personnel_number
+        )
+        data = serialize_object(response)
+
+        items = data.get("AbsenceAttendance", {}).get("item", [])
+
+        # Filter only specified absence types
+        filtered_items = [i["Item"] for i in items if i["Item"].get("AbsenceAttendanceType") == absence_type.value]
+
+        if filtered_items:
+            # Sort by StartDate descending
+            latest = max(filtered_items, key=lambda x: datetime.strptime(x["StartDate"], "%Y-%m-%d"))
+            return latest["StartDate"], latest["EndDate"]
+        else:
+            return None, None
     ############################################################################################
     #### Convenience Methods ####
     ############################################################################################
@@ -113,12 +137,18 @@ class Absence:
             operation=OperationType.INSERT
         )   
         
-    def end_sick_leave(self, start_date, end_date, personnel_number):
+    def end_sick_leave(self, end_date, personnel_number):
+        original_startdate, original_enddate = self._get_start_end_dates_for_personnel(personnel_number, AbsenceType.SICK_LEAVE)
+        if not original_startdate or not original_enddate:
+            raise ValueError("No existing sick leave found for the given personnel number.")
+        
         return self.set_absence_attendance(
-            start_date=start_date,
+            start_date=original_startdate,
             end_date=end_date,
             personnel_number=personnel_number,
             absence_type=AbsenceType.SICK_LEAVE,
-            operation=OperationType.UPDATE
+            operation=OperationType.UPDATE,
+            original_enddate=original_enddate
         )
-        
+    
+    

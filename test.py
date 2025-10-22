@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from Absence.src.absence import Absence
 from Absence.src.absence import AbsenceType
-
+from datetime import datetime
 absence = Absence(
     client_cert_p12=os.getenv("CLIENT_CERT_P12"),
     client_cert_password=os.getenv("CLIENT_CERT_PASSWORD"),
@@ -14,10 +14,38 @@ absence = Absence(
 
 # response = absence.get_absence_attendance_by_period(
 #     start_date="2025-01-01",
-#     end_date="2025-10-20",
+#     end_date="2025-10-22",
 #     personnel_number="122743"
 # )
-# print(response)
+
+
+# from zeep.helpers import serialize_object
+# data = serialize_object(response)
+
+# items = data.get("AbsenceAttendance", {}).get("item", [])
+
+# # Filter only 'SY' types
+# sy_items = [i["Item"] for i in items if i["Item"].get("AbsenceAttendanceType") == "SY"]
+
+# if sy_items:
+#     # Sort by StartDate descending
+#     latest = max(sy_items, key=lambda x: datetime.strptime(x["StartDate"], "%Y-%m-%d"))
+#     latest_start = latest["StartDate"]
+#     latest_end = latest["EndDate"]
+# else:
+#     latest_start = latest_end = None
+
+# date_end = datetime.strptime(latest_end, "%Y-%m-%d").date()
+# if date_end >= datetime.today().date():
+#     print("Sick leave is ongoing.")
+    
+
+# print(f"Latest StartDate: {latest_start}, EndDate: {latest_end}")
+
+
+
+
+#print(response)
 # response = absence.set_absence_attendance(
 #     start_date="2025-10-22",
 #     end_date="9999-12-31",
@@ -32,7 +60,7 @@ absence = Absence(
 #     absence_type=AbsenceType.CHILD_SICK_LEAVE
 # )
 
-response = absence.set_sick_leave("2025-10-22", "9999-12-31", "122743")
-print(response)
-response = absence.end_sick_leave("2025-10-22", "9999-12-31", "122743")
+#response = absence.set_sick_leave("2025-10-22", "9999-12-31", "122743")
+#print(response)
+response = absence.end_sick_leave("2025-10-22","122743")
 print(response)

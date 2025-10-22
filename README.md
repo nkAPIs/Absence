@@ -1,28 +1,108 @@
 # Absence
-Fraværs håndtering i OPUS
+Et Python bibliotek til at håndtere sygefravær i OPUS
+
+## Installation
+
+### Forudsætninger
+
+- Python 3.12 eller nyere  
+- uv
 
 
-retur fra setabsence
-Ingen fejl
-[{
-    'StatusType': None,
-    'MessageText': None
-}]
+### Opsætning
 
-Fejl kollision på dagen
-[{
+1. Klon repository’et:
+```bash
+git clone https://github.com/nkAPIs/Absence.git
+cd Absence
+uv sync
+````
+### Brug af biblioteket
+
+#### Standard installation
+1. installer whl fil:
+```uv
+ uv add Absence@git+https://github.com/nkAPIs/Absence.git
+```
+
+2. importer Absence:
+```python
+from Absence.src.Absence import Absence
+```
+3. Opret .env fil
+```bash
+CLIENT_CERT_PASSWORD="<certifikat password>"
+CLIENT_CERT_P12="<fuld sti til .P12 certifikat fil>"
+BASE_URL="https://opus-api-prod.prod01.apimanagement.eu10.hana.ondemand.com/lpt/"
+CLIENT_ID = <number eks. 123 kommune kode til OPUS>
+VENDOR_UUID="A0369F2D21711ED999CDA1F855B02B34"
+WSDL_PATH="sti til placering af wsdl filer eks. /usr/tmp/wsdl/"
+```
+
+### Funktioner
++ set_sick_leave(start_date, end_date, personnel_number)
+ 
+    opretter sygefravær på medarbejder.
+
+    start_date: start dato for fravær. eks. 2025-10-23
+    end_date: slut dato for fravær . eks. 9999-12-31  ==> åbent fravær
+    personnel_number: medarbejder nummer på person der skal sygemeldes.
+    
+    **Retur værdier**
+    
+    Ingen fejl
+    ```bash
+    [{
+        'StatusType': None,
+        'MessageText': None
+    }]
+    ```
+    Fejl kollision på dagen
+    ```bash
+    [{
+        'StatusType': 'E',
+        'MessageText': 'Indføjning ikke mulig pga. kollision'
+    }, {
+        'StatusType': 'W',
+        'MessageText': 'Kollision med Fravær (2001) / Sygdom (IT2001/SY) fra 22.10.2025 til 31.12.9999'
+    }]
+    ```
+    kollision afkorter fravær
+    ```bash
+    [{
+        'StatusType': None,
+        'MessageText': None
+    }, {
+        'StatusType': 'W',
+        'MessageText': 'Fravær afkortet til 06.11.2025 pga. kollision med FE den 07.11.2025.'
+    }]
+
+    ```
+
+- end_sick_leave(end_date, personnel_number)
+    
+    Slutter sygefravær for medarbejder (raskmelder)
+    Tager seneste dato for aktiv sygemelding.
+    end_date: slut dato for fravær . eks. 2025-10-23  ==> slut dato for fravær
+    personnel_number: medarbejder nummer på person der skal sygemeldes.
+
+    
+    **Retur værdier**
+    
+    Ingen fejl
+    ```bash
+    [{
+        'StatusType': None,
+        'MessageText': None
+    }]
+    ```
+    Kan ikke finde fravær
+    ```bash
+    [{
     'StatusType': 'E',
-    'MessageText': 'Indføjning ikke mulig pga. kollision'
-}, {
-    'StatusType': 'W',
-    'MessageText': 'Kollision med Fravær (2001) / Sygdom (IT2001/SY) fra 22.10.2025 til 31.12.9999'
-}]
+    'MessageText': 'Teknisk fejl. Fraværet du ønsker at ændre/slette, kunne ikke findes.'
+    }]
+    ```
 
-kollision afkorter fravær
-[{
-    'StatusType': None,
-    'MessageText': None
-}, {
-    'StatusType': 'W',
-    'MessageText': 'Fravær afkortet til 06.11.2025 pga. kollision med FE den 07.11.2025.'
-}]
+    Hvis medarbejder ikke findes og startdato dermed er None
+    kastes en *ValueError("No existing sick leave found for the given personnel number.")*
