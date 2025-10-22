@@ -1,7 +1,15 @@
 from zeep import Client, Transport
 from requests_pkcs12 import Pkcs12Adapter
 import requests
-
+from enum import Enum
+class AbsenceType(Enum):
+    SICK_LEAVE = "SY"
+    CHILD_SICK_LEAVE = "BS"
+    
+class OperationType(Enum):
+    INSERT = "INS"
+    UPDATE = "MOD"
+    DELETE = "DEL"
 
 class Absence:
     def __init__(self, client_cert_p12, client_cert_password, client_id, vendor_uuid, base_url, wsdl_path):
@@ -33,27 +41,26 @@ class Absence:
             "{urn:kmd.dk:LPT:VACAB:external}GetAbsenceAttendanceByPeriod_OS_SIBinding",
             f"{self.base_url}get-absence-attendance-by-period"
         )
-        
         response = service.GetAbsenceAttendanceByPeriod_OS_SI(**request)
         return response
         
-    def set_absence_attendance(self, start_date, end_date, personnel_number, absence_type):
-        client = self.get_client(wsdl_path=f"{self.wsdl_path}SetAbsenceAttendance_OS_SIService_v.3.5.wsdl")
+    def set_absence_attendance(self, start_date, end_date, personnel_number, absence_type: AbsenceType):
+        client = self._get_client(wsdl_path=f"{self.wsdl_path}SetAbsenceAttendance_OS_SIService_v.3.5.wsdl")
         request = {
             "ClientID": self.client_id,
             "StartDate": start_date,
             "EndDate": end_date,
-            "Operation": "C",  # C = Create, U = Update, D = Delete   ??????????
+            "Operation": OperationType.INSERT.value,
             "PersonnelNumber": personnel_number,
-            "AbsenceAttendanceType": absence_type,
-            "ExternalID": "SOAPUI#001",
+            "AbsenceAttendanceType": absence_type.value,
             "VendorUUID": "A0369F2D21711ED999CDA1F855B02B34"
         }
 
-
         service = client.create_service(
-            "{urn:kmd.dk:LPT:VACAB:external}SetAbsenceAttendance_OS_SI",
+            "{urn:kmd.dk:LPT:VACAB:external}SetAbsenceAttendance_OS_SIBinding",
             f"{self.base_url}set-absence-attendance"
         )
+        response = service.SetAbsenceAttendance_OS_SI(**request)
+        return response
 
         
