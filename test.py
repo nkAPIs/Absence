@@ -2,8 +2,8 @@
 ### importing necessary modules and loading environment variables
 import os
 from dotenv import load_dotenv
-from Absence.src.absence import Absence
-from Absence.src.absence import AbsenceType
+from Absence.src.Absence.absence import Absence
+from Absence.src.Absence.absence import AbsenceType
 from datetime import datetime
 
 
