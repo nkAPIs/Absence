@@ -3,7 +3,7 @@ from requests_pkcs12 import Pkcs12Adapter
 import requests
 from enum import Enum
 from zeep.helpers import serialize_object
-from datetime import datetime
+from datetime import datetime, timedelta, date
 
 class AbsenceType(Enum):
     SICK_LEAVE = "SY"
@@ -30,7 +30,51 @@ class Absence:
     def _get_client(self, wsdl_path):
         return Client(wsdl=wsdl_path, transport=self.transport)
 
-       
+
+    def get_leave_data(self, personnel_number):
+        start_datetime = datetime.now()
+        end_datetime = start_datetime + timedelta(days=365)
+        start_date = datetime.strptime(start_datetime.strftime("%Y-%m-%d"), "%Y-%m-%d").date()
+        end_date = datetime.strptime(end_datetime.strftime("%Y-%m-%d"), "%Y-%m-%d").date()
+        
+        response = self.get_absence_attendance_by_period(start_date, end_date, personnel_number)
+        
+        if response.ReturnStatus is not None:
+            return None
+
+        items_or = [
+                itm for itm in response["AbsenceAttendance"]["item"]
+                if itm["Key"]["AbsenceAttendanceType"].startswith("OR")
+            ]
+
+        for i in items_or:
+            if self._is_today_in_period(i.Item['StartDate'], i.Item['EndDate']):
+                return {
+                    'PersonnelNumber': personnel_number,
+                    'IsOnLeave': True,
+                    'StartDate': start_date,
+                    'EndDate': end_date,
+                    'AbsenceAttendanceType': i.Item['AbsenceAttendanceType'],
+                    'AbsenceAttendanceTypeText': i.Item['AbsenceAttendanceTypeText'],
+                }
+
+        return {
+            'PersonnelNumber': personnel_number,
+            'IsOnLeave': False,
+            'StartDate': '',
+            'EndDate': '',
+            'AbsenceAttendanceType': '',
+            'AbsenceAttendanceTypeText': '',
+        }
+
+    def _is_today_in_period(self, start_date_str: str, end_date_str: str) -> bool:
+        today = date.today()
+
+        start = datetime.strptime(start_date_str, "%Y-%m-%d").date()
+        end = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+
+        return start <= today <= end
+    
     def get_absence_attendance_by_period(self, start_date, end_date, personnel_number):
         client = self._get_client(wsdl_path=f"{self.wsdl_path}GetAbsenceAttendanceByPeriod_OS_SIService_v.3.5.wsdl")
         request = {
