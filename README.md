@@ -113,8 +113,7 @@ WSDL_PATH="sti til placering af wsdl filer eks. /usr/tmp/wsdl/"
 ### importing necessary modules and loading environment variables
 import os
 from dotenv import load_dotenv
-from Absence.src.absence import Absence
-from Absence.src.absence import AbsenceType
+from Absence.src.Absence.absence import Absence, AbsenceType
 from datetime import datetime
 
 
