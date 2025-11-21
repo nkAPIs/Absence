@@ -2,6 +2,8 @@
 ### importing necessary modules and loading environment variables
 import os
 from dotenv import load_dotenv
+import Absence
+
 from Absence.src.Absence.absence import Absence
 from Absence.src.Absence.absence import AbsenceType
 import json
@@ -28,17 +30,7 @@ absence = Absence(
 )
 
 
+result = absence.get_leave_data(personnel_number="153802", all_data=False, filtered_leave_codes=True)
 
+print(json.dumps(result, ensure_ascii=False, indent=4, default=json_default))
 
-#print(result)
-# ### setting sick leave for a personnel number
-# response = absence.set_sick_leave(start_date="2025-10-22", end_date="9999-12-31", personnel_number="123456")
-# print(response)
-
-# ### ending sick leave for a personnel number
-# response = absence.end_sick_leave(end_date="2025-10-22",personnel_number="123456")
-# print(response)
-
-# ### setting child sick leave for a personnel number
-# response = absence.set_child_sick_leave(start_date="2025-10-22", end_date="2025-10-23", personnel_number="123456")
-# print(response)

@@ -26,12 +26,39 @@ class Absence:
         self.session = requests.Session()
         self.session.mount("https://", Pkcs12Adapter(pkcs12_filename=client_cert_p12, pkcs12_password=client_cert_password))
         self.transport = Transport(session=self.session)
-
+        self.leave_codes = {
+            'ORU', # orlov uden løn,
+            'ORL', # orlov med løn,
+            'BAO', # barselsorlov,
+        }
     def _get_client(self, wsdl_path):
         return Client(wsdl=wsdl_path, transport=self.transport)
 
 
-    def get_leave_data(self, personnel_number):
+    def export_rawdata(self, response, filtered_leave_codes=False):
+        items = []
+        if response is None or response.AbsenceAttendance is None or response.AbsenceAttendance.item is None:
+            return items
+
+        if filtered_leave_codes:
+            items_or = [
+                itm for itm in response["AbsenceAttendance"]["item"]
+                if itm["Key"]["AbsenceAttendanceType"] in self.leave_codes
+            ]
+        else:
+            items_or = [itm for itm in response["AbsenceAttendance"]["item"]]        
+                
+        for itm in items_or:
+            items.append({
+                'PersonnelNumber': itm.Item.PersonnelNumber,
+                'StartDate': itm.Item.StartDate,
+                'EndDate': itm.Item.EndDate,
+                'AbsenceAttendanceType': itm.Item.AbsenceAttendanceType,
+                'AbsenceAttendanceTypeText': itm.Item.AbsenceAttendanceTypeText,
+            })
+        return items
+    
+    def get_leave_data(self, personnel_number, all_data=False, filtered_leave_codes=False):
         start_datetime = datetime.now()
         end_datetime = start_datetime + timedelta(days=365)
         start_date = datetime.strptime(start_datetime.strftime("%Y-%m-%d"), "%Y-%m-%d").date()
@@ -39,12 +66,18 @@ class Absence:
         
         response = self.get_absence_attendance_by_period(start_date, end_date, personnel_number)
         
-        if response.ReturnStatus is not None:
+        
+        
+        if response.ReturnStatus is not None or response is None:
             return None
+
+        if all_data:
+            return self.export_rawdata(response, filtered_leave_codes)
 
         items_or = [
                 itm for itm in response["AbsenceAttendance"]["item"]
-                if itm["Key"]["AbsenceAttendanceType"].startswith("OR")
+                if itm["Key"]["AbsenceAttendanceType"] in self.leave_codes
+                # if itm["Key"]["AbsenceAttendanceType"].startswith("OR") or itm["Key"]["AbsenceAttendanceType"] in self.not_leave_codes
             ]
 
         for i in items_or:
