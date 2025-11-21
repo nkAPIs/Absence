@@ -29,8 +29,14 @@ absence = Absence(
     wsdl_path=os.getenv("WSDL_PATH")
 )
 
+emps = ["",
+"",
+"",
+"",
+""]
 
-result = absence.get_leave_data(personnel_number="153802", all_data=False, filtered_leave_codes=True)
+for emp in emps:
+    result = absence.get_leave_data(personnel_number=emp, all_data=False, filtered_leave_codes=True, only_active_leave=False)
+    print(json.dumps(result, ensure_ascii=False, indent=4, default=json_default))
 
-print(json.dumps(result, ensure_ascii=False, indent=4, default=json_default))
 
