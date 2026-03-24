@@ -5,7 +5,6 @@ from enum import Enum
 from zeep.helpers import serialize_object
 from datetime import datetime, timedelta, date
 
-
 class AbsenceType(Enum):
     SICK_LEAVE = "SY"
     CHILD_SICK_LEAVE = "BS"
@@ -204,27 +203,25 @@ class Absence:
         return response
     
     def _get_start_end_dates_for_personnel(self, personnel_number, absence_type: AbsenceType):
-        try:
-            response = self.get_absence_attendance_by_period(
-                start_date="2000-01-01",
-                end_date="9999-12-31",
-                personnel_number=personnel_number
-            )
-            data = serialize_object(response)
+        response = self.get_absence_attendance_by_period(
+            start_date="2000-01-01",
+            end_date="9999-12-31",
+            personnel_number=personnel_number
+        )
+        data = serialize_object(response)
 
-            items = data.get("AbsenceAttendance", {}).get("item", [])
+        items = data.get("AbsenceAttendance", {}).get("item", [])
 
-            # Filter only specified absence types
-            filtered_items = [i["Item"] for i in items if i["Item"].get("AbsenceAttendanceType") == absence_type.value]
+        # Filter only specified absence types
+        filtered_items = [i["Item"] for i in items if i["Item"].get("AbsenceAttendanceType") == absence_type.value]
 
-            if filtered_items:
-                # Sort by StartDate descending
-                latest = max(filtered_items, key=lambda x: datetime.strptime(x["StartDate"], "%Y-%m-%d"))
-                return latest["StartDate"], latest["EndDate"]
-            else:
-                return None, None
-        except Exception as e:
+        if filtered_items:
+            # Sort by StartDate descending
+            latest = max(filtered_items, key=lambda x: datetime.strptime(x["StartDate"], "%Y-%m-%d"))
+            return latest["StartDate"], latest["EndDate"]
+        else:
             return None, None
+
     ############################################################################################
     #### Convenience Methods ####
     ############################################################################################
