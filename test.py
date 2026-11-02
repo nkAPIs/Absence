@@ -29,14 +29,25 @@ absence = Absence(
     wsdl_path=os.getenv("WSDL_PATH")
 )
 
-emps = ["",
-"",
-"",
-"",
-""]
+emps = ["120862",
+"178672",]
 
 for emp in emps:
     result = absence.get_leave_data(personnel_number=emp, all_data=False, filtered_leave_codes=True, only_active_leave=False)
     print(json.dumps(result, ensure_ascii=False, indent=4, default=json_default))
 
 
+# {
+#   "cc": "mfjan@naestved.dk",
+#   "id": "AAMkAGE5ZmZkMTIxLTg3YzEtNDk3ZS1hNjQ2LTUwNjhjN2RlOWMzNABGAAAAAABOcgXq-8WTRJzmKvjlhQlJBwAPIiaDk3AeQ6zSAZtiSflCAAAAAAEMAAAPIiaDk3AeQ6zSAZtiSflCAAQVs0vKAAA=",
+#   "body": "***",
+#   "from": "marcst@naestved.dk",
+#   "name": "Mette Fladberg Jannerup",
+#   "send_to": "kaern@naestved.dk;_idm_PG_BornogUngeTeamSyd_5621@naestved.dk;underretning@naestved.dk",
+#   "subject": "Barn syg",
+#   "mail_group": "_idm_PG_BornogUngeTeamSyd_5621@naestved.dk",
+#   "manager_upn": "kaern@naestved.dk",
+#   "on_behalf_of": "frarob@naestved.dk",
+#   "received_date": "2026-11-02T07:09:10Z",
+#   "employee_number": "120862"
+# }
