@@ -132,7 +132,7 @@
 	</wsdl:binding>
 	   <wsdl:service name="SetMaternityCase_OS_SIService">
       <wsdl:port name="HTTPS_Port" binding="p1:SetMaternityCase_OS_SIBinding">
-         <soap:address xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" location="https://opus-api-prod.prod01.apimanagement.eu10.hana.ondemand.com/lpt/set-maternity-case" />
+         <soap:address xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" location="https://opus.integration.kmd.dk/lpt/set-maternity-case" />
       </wsdl:port>
    </wsdl:service>
 </wsdl:definitions>

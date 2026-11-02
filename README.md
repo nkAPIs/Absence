@@ -33,7 +33,7 @@ from Absence.src.Absence import Absence
 ```bash
 CLIENT_CERT_PASSWORD="<certifikat password>"
 CLIENT_CERT_P12="<fuld sti til .P12 certifikat fil>"
-BASE_URL="https://opus-api-prod.prod01.apimanagement.eu10.hana.ondemand.com/lpt/"
+BASE_URL="https://opus.integration.kmd.dk/lpt/"
 CLIENT_ID = <number eks. 123 kommune kode til OPUS>
 VENDOR_UUID="A0369F2D21711ED999CDA1F855B02B34"
 WSDL_PATH="sti til placering af wsdl filer eks. /usr/tmp/wsdl/"

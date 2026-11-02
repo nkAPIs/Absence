@@ -8,6 +8,7 @@ from Absence.src.Absence.absence import Absence
 from Absence.src.Absence.absence import AbsenceType
 import json
 from datetime import date
+from zeep.helpers import serialize_object
 
 def json_default(obj):
     if isinstance(obj, date):
@@ -29,12 +30,21 @@ absence = Absence(
     wsdl_path=os.getenv("WSDL_PATH")
 )
 
-emps = ["120862",
-"178672",]
+emps = ["120862", "178672",]
 
 for emp in emps:
     result = absence.get_leave_data(personnel_number=emp, all_data=False, filtered_leave_codes=True, only_active_leave=False)
     print(json.dumps(result, ensure_ascii=False, indent=4, default=json_default))
+
+print("---------------------------------------------------")
+
+for emp in emps:
+    result = result = absence.get_absence_attendance_by_period('2026-01-01', '2026-11-01', '120862')
+    print(json.dumps(serialize_object(result), ensure_ascii=False, indent=4, default=json_default))
+
+
+
+
 
 
 # {
