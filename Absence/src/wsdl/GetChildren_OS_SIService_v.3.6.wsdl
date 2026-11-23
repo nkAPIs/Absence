@@ -124,7 +124,7 @@
 	</wsdl:binding>
 		<wsdl:service name="GetChildren_OS_SIService">
 		<wsdl:port name="HTTPS_Port" binding="p1:GetChildren_OS_SIBinding">
-			<soap:address location="https://opus-api-prod.prod01.apimanagement.eu10.hana.ondemand.com/lpt/get-children" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			<soap:address location="https://opus.integration.kmd.dk/lpt/get-children" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
 		</wsdl:port>
 	</wsdl:service>
 </wsdl:definitions>

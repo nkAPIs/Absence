@@ -164,7 +164,7 @@
 	</wsdl:binding>
 		<wsdl:service name="GetMaternityCases_OS_SIService">
 		<wsdl:port name="HTTPS_Port" binding="p1:GetMaternityCases_OS_SIBinding">
-			<soap:address location="https://opus-api-prod.prod01.apimanagement.eu10.hana.ondemand.com/lpt/get-maternity-cases" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
+			<soap:address location="https://opus.integration.kmd.dk/lpt/get-maternity-cases" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"/>
 		</wsdl:port>
 	</wsdl:service>
 </wsdl:definitions>

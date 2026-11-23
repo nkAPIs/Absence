@@ -21,7 +21,7 @@ class Absence:
         self.client_cert_password = client_cert_password
         self.client_id = client_id
         self.vendor_uuid = vendor_uuid
-        self.base_url = base_url #"https://opus-api-prod.prod01.apimanagement.eu10.hana.ondemand.com/lpt/"
+        self.base_url = base_url #"https://opus.integration.kmd.dk/lpt/"
         self.wsdl_path = wsdl_path
         self.session = requests.Session()
         self.session.mount("https://", Pkcs12Adapter(pkcs12_filename=client_cert_p12, pkcs12_password=client_cert_password))
@@ -137,7 +137,7 @@ class Absence:
         return start <= today <= end
     
     def get_absence_attendance_by_period(self, start_date, end_date, personnel_number):
-        client = self._get_client(wsdl_path=f"{self.wsdl_path}GetAbsenceAttendanceByPeriod_OS_SIService_v.3.5.wsdl")
+        client = self._get_client(wsdl_path=f"{self.wsdl_path}GetAbsenceAttendanceByPeriod_OS_SIService_v.3.6.wsdl")
         request = {
             "ClientID": self.client_id,
             "VendorUUID": self.vendor_uuid,
@@ -192,7 +192,7 @@ class Absence:
                     
                 
     def set_absence_attendance(self, start_date, end_date, personnel_number, absence_type: AbsenceType, operation: OperationType, original_enddate=None):
-        client = self._get_client(wsdl_path=f"{self.wsdl_path}SetAbsenceAttendance_OS_SIService_v.3.5.wsdl")
+        client = self._get_client(wsdl_path=f"{self.wsdl_path}SetAbsenceAttendance_OS_SIService_v.3.6.wsdl")
         request = self._get_request(operation, start_date, end_date, personnel_number, absence_type, original_enddate)
         
         service = client.create_service(

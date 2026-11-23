@@ -1,7 +1,11 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "absence"
-version = "1.0.1"
-description = "Add your description here"
+version = "1.0.2"
+description = "Absence module for get and set absence in KMD Opus"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -10,6 +14,10 @@ dependencies = [
     "requests-pkcs12>=1.27",
     "zeep>=4.3.2",
 ]
+
+[tool.setuptools.packages.find]
+include = ["Absence*"]
+
 [tool.setuptools.package-data]
 "Absence.src.wsdl" = ["*.wsdl"]
 "Absence.src.certs" = ["*.p12"]
