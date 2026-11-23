@@ -39,7 +39,7 @@ for emp in emps:
 print("---------------------------------------------------")
 
 for emp in emps:
-    result = result = absence.get_absence_attendance_by_period('2026-01-01', '2026-11-01', '120862')
+    result = absence.get_absence_attendance_by_period('2026-01-01', '2026-11-01', '120862')
     print(json.dumps(serialize_object(result), ensure_ascii=False, indent=4, default=json_default))
 
 
